@@ -1,0 +1,341 @@
+# =============================================================================
+# ORCHESTRATOR MANIFEST
+# =============================================================================
+# Central registry of projects, agents, and pipeline patterns.
+# The orchestrator loads this to understand what's available and how to route.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# PROJECT PORTFOLIO
+# -----------------------------------------------------------------------------
+# High-level awareness of all active projects.
+# The orchestrator uses this to understand cross-repo relationships,
+# route tasks to the correct repo context, and broker between repos.
+# Keep summaries brief -- the orchestrator doesn't need implementation details.
+# -----------------------------------------------------------------------------
+projects:
+  - name: venus-components
+    repo_path: ~/Work/projects/venus-components
+    stack: React, TypeScript
+    summary: "Internal React UI component library (@contentstack/venus-components). Provides reusable UI components like DateRangePicker, Button, Modal, etc."
+    related_to: []
+
+  - name: cs-highcharts
+    repo_path: ~/Work/projects/cs-highcharts
+    stack: React, TypeScript, Highcharts
+    summary: "Internal Highcharts charting library wrapper. Provides chart components for dashboards and analytics."
+    related_to: []
+
+  - name: data-analytics-api
+    repo_path: ~/Work/projects/data-analytics-api
+    stack: NestJS, MongoDB, Elasticsearch, Redis
+    summary: "Backend service for argus and platform-discovery."
+    related_to: [product-analytics]
+
+  - name: product-analytics
+    repo_path: ~/Work/projects/product-analytics
+    stack: React 18, TypeScript, Redux Toolkit, TanStack React Query, Webpack 5, Module Federation, Rollup
+    summary: >
+      Monorepo with two apps: argus (product analytics dashboard app + @contentstack/platform-dashboard
+      library) and platform-discovery (feature discovery micro-frontend). Argus uses Redux Toolkit,
+      TanStack React Query, dnd-kit for drag-and-drop dashboard builder, and dual Webpack/Rollup build.
+      Platform-discovery is a lightweight federated React app. Both use Module Federation and
+      @contentstack/venus-components. No monorepo tooling -- each app has independent deps.
+    related_to: [data-analytics-api, venus-components, cs-highcharts]
+
+  # -- ADD YOUR PROJECT REPOS BELOW --
+  # - name: your-frontend-app
+  #   repo_path: ~/Work/projects/your-frontend-app
+  #   stack: React, Redux, TypeScript
+  #   summary: "Frontend application for [description]"
+  #   related_to: [your-backend-api]
+  #
+  # - name: your-backend-api
+  #   repo_path: ~/Work/projects/your-backend-api
+  #   stack: NestJS, TypeScript, MongoDB
+  #   summary: "Backend API for [description]"
+  #   related_to: [your-frontend-app]
+  #
+  # - name: your-data-service
+  #   repo_path: ~/Work/projects/your-data-service
+  #   stack: Python, FastAPI, Pandas
+  #   summary: "Data processing service for [description]"
+  #   related_to: [your-backend-api]
+
+# -----------------------------------------------------------------------------
+# AGENT REGISTRY
+# -----------------------------------------------------------------------------
+# Lists all available agents with their capabilities.
+# The orchestrator uses this for intent matching and pipeline planning.
+# Agent definitions (full system prompts) live in ~/.dev-env/agents/
+# Skills are scoped per agent and live in ~/.dev-env/skills/{agent-name}/
+# -----------------------------------------------------------------------------
+agents:
+  - name: codebase-intelligence
+    type: knowledge
+    handles:
+      - explore and understand existing code
+      - explain how a feature works
+      - analyze architecture and design patterns
+      - trace data/control flow across files and services
+      - pre-implementation research on unfamiliar code
+      - onboard to a new area of the codebase
+    skills_dir: ~/.dev-env/skills/codebase-intelligence/
+
+  - name: planning
+    type: strategy
+    handles:
+      - break down complex features into ordered implementation steps
+      - create detailed implementation plans with file-level specificity
+      - identify risks, edge cases, and decisions needing user input
+      - sprint-level task breakdown for epics
+      - sequence multi-step changes across files and modules
+    skills_dir: ~/.dev-env/skills/planning/
+
+  - name: implementation
+    type: execution
+    handles:
+      - write new code (components, endpoints, scripts, functions)
+      - refactor existing code for better patterns
+      - add features to existing modules
+      - fix bugs after diagnosis
+      - write/update unit and integration tests
+      - database schema changes and migrations
+      - state management work (Redux, Zustand, etc.)
+      - integrate with external services/APIs
+    skills_dir: ~/.dev-env/skills/implementation/
+
+  - name: code-review
+    type: quality
+    handles:
+      - review code quality, readability, and maintainability
+      - check for security vulnerabilities
+      - identify performance issues
+      - verify best practice adherence
+      - review PRs from teammates
+      - self-review before pushing
+    skills_dir: ~/.dev-env/skills/code-review/
+
+  - name: debugging
+    type: diagnosis
+    handles:
+      - diagnose frontend bugs (UI, state, rendering)
+      - diagnose backend bugs (API errors, DB queries)
+      - trace cross-service issues (frontend -> API -> data)
+      - analyze error logs and monitoring alerts
+      - identify root cause of failing tests
+    skills_dir: ~/.dev-env/skills/debugging/
+
+  - name: infrastructure
+    type: devops
+    handles:
+      - Docker and containerization
+      - CI/CD pipeline configuration
+      - deployment scripts
+      - environment configuration and secrets management
+    skills_dir: ~/.dev-env/skills/infrastructure/
+
+  - name: docs-and-contracts
+    type: documentation
+    handles:
+      - document API contracts and endpoints
+      - sync shared types/interfaces across repos
+      - write technical design documents
+      - update README and developer guides
+    skills_dir: ~/.dev-env/skills/docs-and-contracts/
+
+  - name: config-master
+    type: meta
+    handles:
+      - add, update, or remove projects in the manifest
+      - create new agent definitions
+      - create new library expert instances from template
+      - author or update skill files for any agent
+      - modify orchestrator rules and pipeline patterns
+      - run setup-project.sh for new repos
+      - any maintenance of the ~/.dev-env/ infrastructure
+    skills_dir: null # config-master doesn't need skills -- it IS the skills manager
+
+# -----------------------------------------------------------------------------
+# LIBRARY EXPERTS
+# -----------------------------------------------------------------------------
+# Specialized knowledge agents that are experts on a specific library's
+# source code. They read source, not docs. Replicable from template.
+# Agent definitions live in ~/.dev-env/agents/library-experts/
+# Shared skills live in ~/.dev-env/skills/library-expert/
+# -----------------------------------------------------------------------------
+library_experts:
+  - name: venus-component-expert
+    source_path: ~/Work/projects/venus-components
+    description: "Expert on @contentstack/venus-components React UI library"
+    skills_dir: ~/.dev-env/skills/library-expert/
+
+  - name: cs-highcharts-expert
+    source_path: ~/Work/projects/cs-highcharts
+    description: "Expert on cs-highcharts charting library"
+    skills_dir: ~/.dev-env/skills/library-expert/
+
+  # -- ADD MORE LIBRARY EXPERTS BELOW --
+  # - name: your-lib-expert
+  #   source_path: ~/Work/projects/your-lib
+  #   description: "Expert on your-lib"
+  #   skills_dir: ~/.dev-env/skills/library-expert/
+
+# -----------------------------------------------------------------------------
+# PIPELINE PATTERNS
+# -----------------------------------------------------------------------------
+# Predefined agent sequences for common task types.
+# The orchestrator uses these as templates but can dynamically
+# skip steps for simple tasks or add steps for complex ones.
+# -----------------------------------------------------------------------------
+pipeline_patterns:
+  # Simple tasks -- single agent or orchestrator handles directly
+  trivial_question:
+    description: "Simple question answerable from memory or current context"
+    pipeline: [] # orchestrator handles directly
+    examples:
+      - "What did we work on yesterday?"
+      - "What's the project tech stack?"
+
+  quick_fix:
+    description: "Single-file change with obvious fix"
+    pipeline: [implementation]
+    examples:
+      - "Fix the typo in the header component"
+      - "Rename this variable to camelCase"
+
+  # Standard tasks -- 2-3 agents
+  exploration:
+    description: "Understand existing code without making changes"
+    pipeline: [codebase-intelligence]
+    examples:
+      - "How does the auth flow work?"
+      - "What components use the DateRangePicker?"
+
+  standard_feature:
+    description: "Feature implementation in a single repo"
+    pipeline: [codebase-intelligence, planning, implementation]
+    examples:
+      - "Add pagination to the users endpoint"
+      - "Add bulk delete functionality to entries"
+
+  standard_bugfix:
+    description: "Bug requiring diagnosis then fix"
+    pipeline: [debugging, implementation]
+    examples:
+      - "Users can't export CSV anymore"
+      - "The login form doesn't validate email format"
+
+  library_consumption:
+    description: "Implement a component/feature from an internal library"
+    pipeline: ["{library-expert}", implementation]
+    examples:
+      - "Implement Venus DateRangePicker in the filter panel"
+      - "Add a stacked bar chart using cs-highcharts"
+
+  # Complex tasks -- full pipeline
+  complex_feature:
+    description: "Multi-file feature, architecture change, or new system"
+    pipeline: [codebase-intelligence, planning, implementation, code-review]
+    examples:
+      - "Build the new analytics dashboard with 5 chart types"
+      - "Migrate from Redux to Zustand"
+
+  cross_repo_feature:
+    description: "Changes spanning multiple repositories"
+    pipeline: [codebase-intelligence, codebase-intelligence, planning, implementation, implementation]
+    notes: "codebase-intelligence runs on each repo, implementation runs on each repo"
+    examples:
+      - "Update the user API contract and frontend consumer"
+      - "Add a new field to the data pipeline and expose in API and frontend"
+
+  library_contribution:
+    description: "Making changes to a library's source code"
+    pipeline: ["{library-expert}", planning, implementation]
+    examples:
+      - "Add timezone support to Venus DateRangePicker"
+      - "Add stacking feature to cs-highcharts"
+
+  code_review_task:
+    description: "Review code or PR"
+    pipeline: [code-review]
+    fallback_pipeline: [codebase-intelligence, code-review]
+    notes: "Use fallback when reviewing unfamiliar code"
+    examples:
+      - "Review my changes before I push"
+      - "Review this PR from teammate"
+
+  infrastructure_task:
+    description: "DevOps, Docker, CI/CD, deployment work"
+    pipeline: [infrastructure]
+    fallback_pipeline: [codebase-intelligence, infrastructure]
+    examples:
+      - "Dockerize the Python ETL service"
+      - "Set up GitHub Actions for the frontend repo"
+
+  documentation_task:
+    description: "API docs, tech design docs, README updates"
+    pipeline: [codebase-intelligence, docs-and-contracts]
+    examples:
+      - "Document the API contract for user service"
+      - "Write a tech design doc for the new caching layer"
+
+  # Dev-env management pipelines -- config-master with optional pre-scanning
+  dev_env_add_project:
+    description: "Adding a new project to the manifest -- auto-scans the repo first"
+    pipeline: [codebase-intelligence, config-master]
+    notes: "codebase-intelligence scans the project repo to auto-detect stack, structure, and generate summary. config-master uses that context to update manifest and run setup-project.sh"
+    examples:
+      - "Add ~/Work/projects/argus-frontend to the manifest"
+      - "Set up my new project for the orchestrator"
+
+  dev_env_add_library_expert:
+    description: "Creating a new library expert -- scans the library source first"
+    pipeline: [codebase-intelligence, config-master]
+    notes: "codebase-intelligence scans the library source to understand its structure, components, and API surface. config-master creates the agent definition and updates manifest."
+    examples:
+      - "Create a library expert for shared-utils at ~/Work/projects/shared-utils"
+      - "Add a library expert for our design-tokens package"
+
+  dev_env_config_change:
+    description: "Direct config changes that don't need scanning -- editing rules, pipelines, existing entries"
+    pipeline: [config-master]
+    examples:
+      - "Update the pipeline for code review tasks"
+      - "Change argus-frontend summary in the manifest"
+      - "Add a new pipeline pattern for migration tasks"
+      - "Create a new migration agent"
+
+  dev_env_author_skill:
+    description: "Authoring a new skill file for an agent -- may need to understand the agent's domain first"
+    pipeline: [config-master]
+    fallback_pipeline: [codebase-intelligence, config-master]
+    notes: "For domain-specific skills (e.g., react-patterns), the orchestrator may scan user's actual React code first to tailor the skill to their conventions. For generic skills, config-master handles directly."
+    examples:
+      - "Write a react-patterns skill for the implementation agent"
+      - "Add a new skill for the debugging agent about log analysis"
+
+# -----------------------------------------------------------------------------
+# TASK COMPLEXITY SIGNALS
+# -----------------------------------------------------------------------------
+# Signals the orchestrator uses to classify task complexity
+# and decide pipeline depth.
+# -----------------------------------------------------------------------------
+complexity_signals:
+  trivial:
+    - "Task requires zero file reads"
+    - "Task requires zero code changes"
+    - "Simple question answerable from context or memory"
+    - "Single-line or single-file obvious fix"
+  standard:
+    - "Feature in a single repo"
+    - "Bug fix with clear symptoms"
+    - "Code review of specific changes"
+    - "Library component consumption"
+  complex:
+    - "Multi-file feature spanning modules"
+    - "Cross-repo changes (2+ repos involved)"
+    - "Architecture changes or migrations"
+    - "New system or service creation"
+    - "Vague or ambiguous request needing clarification"
+    - "Task touches unknown or unfamiliar code"
