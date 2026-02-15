@@ -1,3 +1,10 @@
+---
+name: conflict-pattern-recognition
+agent: git-conflict-resolver
+type: patterns
+description: "Identify common conflict patterns with reliable resolution strategies for fast resolution"
+---
+
 # Skill: Conflict Pattern Recognition
 
 ## PURPOSE

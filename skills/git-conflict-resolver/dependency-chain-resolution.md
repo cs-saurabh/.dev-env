@@ -1,3 +1,10 @@
+---
+name: dependency-chain-resolution
+agent: git-conflict-resolver
+type: workflow
+description: "Trace how conflicts in one file affect other conflicts to prevent broken resolution chains"
+---
+
 # Skill: Dependency Chain Resolution
 
 ## PURPOSE

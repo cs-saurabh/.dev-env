@@ -1,3 +1,10 @@
+---
+name: react-patterns
+agent: implementation
+type: patterns
+description: "Write React code following modern best practices and common project conventions"
+---
+
 # Skill: React / TypeScript Patterns
 
 ## PURPOSE

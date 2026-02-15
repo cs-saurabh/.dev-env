@@ -1,3 +1,10 @@
+---
+name: nestjs-patterns
+agent: implementation
+type: patterns
+description: "Write NestJS code following framework conventions and architectural patterns"
+---
+
 # Skill: NestJS / TypeScript Patterns
 
 ## PURPOSE

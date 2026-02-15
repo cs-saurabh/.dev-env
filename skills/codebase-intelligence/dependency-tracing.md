@@ -1,3 +1,10 @@
+---
+name: dependency-tracing
+agent: codebase-intelligence
+type: workflow
+description: "Trace data flow, control flow, and dependency chains across files, modules, and services"
+---
+
 # Skill: Dependency and Flow Tracing
 
 ## PURPOSE

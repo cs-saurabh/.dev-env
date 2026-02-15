@@ -1,3 +1,10 @@
+---
+name: python-patterns
+agent: implementation
+type: patterns
+description: "Write clean, idiomatic Python code following PEP 8 and modern best practices"
+---
+
 # Skill: Python Patterns
 
 ## PURPOSE

@@ -1,3 +1,10 @@
+---
+name: testing-patterns
+agent: implementation
+type: patterns
+description: "Write meaningful tests alongside code changes across all stacks"
+---
+
 # Skill: Testing Patterns
 
 ## PURPOSE

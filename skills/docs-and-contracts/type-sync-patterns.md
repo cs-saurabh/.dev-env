@@ -1,3 +1,10 @@
+---
+name: type-sync-patterns
+agent: docs-and-contracts
+type: patterns
+description: "Maintain consistent TypeScript types and interfaces across frontend and backend repositories"
+---
+
 # Skill: Cross-Repo Type Synchronization
 
 ## PURPOSE

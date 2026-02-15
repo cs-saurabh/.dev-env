@@ -1,3 +1,10 @@
+---
+name: cross-service-tracing
+agent: debugging
+type: workflow
+description: "Trace bugs spanning multiple services from frontend through API to data layer"
+---
+
 # Skill: Cross-Service Bug Tracing
 
 ## PURPOSE

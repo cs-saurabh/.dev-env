@@ -1,3 +1,10 @@
+---
+name: semantic-merge
+agent: git-conflict-resolver
+type: workflow
+description: "Resolve conflicts by understanding semantic intent of both sides and merging logic correctly"
+---
+
 # Skill: Semantic Merge
 
 ## PURPOSE

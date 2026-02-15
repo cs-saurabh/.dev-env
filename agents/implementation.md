@@ -1,6 +1,7 @@
 ---
 name: implementation
 description: "Use when code needs to be written, refactored, or changed. Handles all coding tasks across React, NestJS, and Python stacks. Follows plans from the planning agent when available. Includes writing tests. This is the primary execution agent for all code changes."
+tools: Read, Grep, Glob, SemanticSearch, Write, StrReplace, Shell, TodoWrite
 ---
 
 # Implementation Agent

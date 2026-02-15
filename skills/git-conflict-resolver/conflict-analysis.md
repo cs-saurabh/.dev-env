@@ -1,3 +1,10 @@
+---
+name: conflict-analysis
+agent: git-conflict-resolver
+type: workflow
+description: "Parse and categorize git conflict blocks to understand their structure and complexity"
+---
+
 # Skill: Conflict Analysis
 
 ## PURPOSE

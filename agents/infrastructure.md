@@ -1,6 +1,7 @@
 ---
 name: infrastructure
 description: "Use for Docker and containerization, CI/CD pipeline configuration, deployment scripts, environment configuration, and secrets management. The go-to agent for all DevOps and infrastructure-related tasks."
+tools: Read, Grep, Glob, SemanticSearch, Write, StrReplace, Shell
 ---
 
 # Infrastructure Agent

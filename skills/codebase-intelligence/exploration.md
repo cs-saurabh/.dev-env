@@ -1,3 +1,10 @@
+---
+name: exploration
+agent: codebase-intelligence
+type: workflow
+description: "Guide structured exploration of any codebase from high-level structure to specific details"
+---
+
 # Skill: Systematic Codebase Exploration
 
 ## PURPOSE

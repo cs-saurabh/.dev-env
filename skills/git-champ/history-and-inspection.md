@@ -1,3 +1,10 @@
+---
+name: history-and-inspection
+agent: git-champ
+type: patterns
+description: "Navigate git history, inspect changes, compare branches, and find information across the timeline"
+---
+
 # Skill: History, Diffs, and Inspection
 
 ## PURPOSE

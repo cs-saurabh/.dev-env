@@ -1,3 +1,10 @@
+---
+name: branch-management
+agent: git-champ
+type: patterns
+description: "Handle all branch operations including creating, switching, tracking, deleting, and renaming"
+---
+
 # Skill: Branch Management
 
 ## PURPOSE

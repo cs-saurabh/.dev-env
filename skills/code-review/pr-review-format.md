@@ -1,3 +1,10 @@
+---
+name: pr-review-format
+agent: code-review
+type: format
+description: "Produce clear, constructive, and actionable review feedback"
+---
+
 # Skill: PR Review Format
 
 ## PURPOSE

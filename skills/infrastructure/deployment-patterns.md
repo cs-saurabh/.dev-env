@@ -1,3 +1,10 @@
+---
+name: deployment-patterns
+agent: infrastructure
+type: patterns
+description: "Configure deployment scripts, environment management, and release strategies"
+---
+
 # Skill: Deployment Patterns
 
 ## PURPOSE

@@ -1,3 +1,10 @@
+---
+name: stash-and-undo
+agent: git-champ
+type: patterns
+description: "Safely stash work-in-progress and undo commits or changes without losing data"
+---
+
 # Skill: Stash and Undo Operations
 
 ## PURPOSE

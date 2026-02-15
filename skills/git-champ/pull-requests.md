@@ -1,3 +1,10 @@
+---
+name: pull-requests
+agent: git-champ
+type: workflow
+description: "Create, manage, review, and merge pull requests using the GitHub CLI"
+---
+
 # Skill: Pull Request Management (gh CLI)
 
 ## PURPOSE

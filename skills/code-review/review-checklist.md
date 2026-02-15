@@ -1,3 +1,10 @@
+---
+name: review-checklist
+agent: code-review
+type: checklist
+description: "Systematic review framework to catch issues consistently and not miss critical problems"
+---
+
 # Skill: Code Review Checklist
 
 ## PURPOSE

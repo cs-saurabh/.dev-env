@@ -1,3 +1,10 @@
+---
+name: diagnostic-workflow
+agent: debugging
+type: workflow
+description: "Structured hypothesis-driven diagnosis process to find root causes efficiently"
+---
+
 # Skill: Systematic Diagnostic Workflow
 
 ## PURPOSE

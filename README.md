@@ -19,9 +19,7 @@ ORCHESTRATOR (main agent)
 ├── infrastructure         (DevOps/Docker/CI)
 ├── docs-and-contracts     (documentation)
 ├── config-master          (dev-env self-management)
-└── library-experts/       (library source code experts)
-    ├── venus-component-expert
-    └── cs-highcharts-expert
+└── library-experts/       (library source code experts, user-specific)
 ```
 
 ## Directory Structure
@@ -31,7 +29,8 @@ ORCHESTRATOR (main agent)
 ├── orchestrator/
 │   ├── cursor-orchestrator-rule.md    # Cursor alwaysApply rule
 │   ├── claude-orchestrator.md         # Claude Code CLAUDE.md content
-│   └── manifest.yaml                  # Project portfolio + agent registry
+│   ├── manifest.yaml                  # Shared: agents, pipelines, signals (git tracked)
+│   └── manifest.local.yaml           # Local: projects, library experts (gitignored)
 ├── agents/
 │   ├── codebase-intelligence.md       # Agent definitions
 │   ├── planning.md
@@ -40,12 +39,12 @@ ORCHESTRATOR (main agent)
 │   ├── debugging.md
 │   ├── infrastructure.md
 │   ├── docs-and-contracts.md
+│   ├── git-champ.md
+│   ├── git-conflict-resolver.md
 │   ├── config-master.md               # Dev-env self-management agent
 │   └── library-experts/
-│       ├── _template.md               # Template for new library experts
-│       ├── venus-component-expert.md
-│       └── cs-highcharts-expert.md
-├── skills/                            # Agent-scoped skills (to be authored)
+│       └── _template.md               # Template for new library experts
+├── skills/                            # Agent-scoped skills
 │   ├── codebase-intelligence/
 │   ├── planning/
 │   ├── implementation/
@@ -53,7 +52,9 @@ ORCHESTRATOR (main agent)
 │   ├── debugging/
 │   ├── infrastructure/
 │   ├── docs-and-contracts/
-│   └── library-expert/
+│   ├── git-champ/
+│   ├── git-conflict-resolver/
+│   └── library-experts/
 ├── setup-project.sh                   # Per-project setup script
 └── README.md                          # This file
 ```
@@ -73,22 +74,38 @@ This creates:
 - `.claude/agents/` -> symlink to agent definitions
 - `CLAUDE.md` -> references the orchestrator prompt
 
-### 2. Update the Manifest
+### 2. Update the Local Manifest
 
-Edit `~/.dev-env/orchestrator/manifest.yaml` to add your project:
+Edit `~/.dev-env/orchestrator/manifest.local.yaml` to add your project. This file is gitignored -- it's your personal setup.
+
+If the file doesn't exist yet, create it:
 
 ```yaml
+# Local manifest -- your projects and library experts (gitignored)
 projects:
   - name: your-project
     repo_path: ~/Work/projects/your-project
     stack: React, TypeScript
     summary: "Brief description of what this project does"
     related_to: [related-project-name]
+
+library_experts: []
 ```
 
 ### 3. Start Working
 
 Open your project in Cursor or Claude Code. The orchestrator is automatically active. Just describe your task naturally -- the orchestrator will classify it, select the right pipeline, and delegate to specialized agents.
+
+## Manifest Split (Shared vs Local)
+
+The manifest is split into two files for shareability:
+
+| File | Content | Git Tracked |
+|------|---------|-------------|
+| `manifest.yaml` | Agents, pipeline patterns, complexity signals | Yes (shared) |
+| `manifest.local.yaml` | Your projects, your library experts | No (gitignored) |
+
+When you clone this repo, you get all the agents, skills, and pipelines ready to go. You just need to create your own `manifest.local.yaml` with your projects and library experts (see step 2 above).
 
 ## Managing the Dev-Env
 
@@ -110,7 +127,7 @@ The orchestrator routes these to the **config-master** agent, which reads, creat
    cp ~/.dev-env/agents/library-experts/_template.md ~/.dev-env/agents/library-experts/your-lib-expert.md
    ```
 2. Edit the new file -- replace `{LIBRARY_NAME}`, `{LIBRARY_DISPLAY_NAME}`, `{SOURCE_PATH}`
-3. Add the library expert to `manifest.yaml` under `library_experts`
+3. Add the library expert to `manifest.local.yaml` under `library_experts`
 
 ## Adding Skills (Follow-Up)
 

@@ -1,3 +1,10 @@
+---
+name: rebase-and-merge
+agent: git-champ
+type: patterns
+description: "Handle advanced git history operations safely and correctly"
+---
+
 # Skill: Rebase, Merge, and Cherry-Pick
 
 ## PURPOSE

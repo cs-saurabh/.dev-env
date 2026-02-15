@@ -1,3 +1,10 @@
+---
+name: log-analysis
+agent: debugging
+type: workflow
+description: "Read and interpret error logs, stack traces, and monitoring data to identify root causes"
+---
+
 # Skill: Log and Error Analysis
 
 ## PURPOSE

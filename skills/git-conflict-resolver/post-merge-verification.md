@@ -1,3 +1,10 @@
+---
+name: post-merge-verification
+agent: git-conflict-resolver
+type: checklist
+description: "Verify merged result is correct and won't introduce silent bugs before committing"
+---
+
 # Skill: Post-Merge Verification
 
 ## PURPOSE

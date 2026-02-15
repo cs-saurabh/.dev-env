@@ -1,3 +1,10 @@
+---
+name: risk-identification
+agent: planning
+type: checklist
+description: "Identify risks, edge cases, and decisions requiring user input before implementation begins"
+---
+
 # Skill: Risk Identification
 
 ## PURPOSE

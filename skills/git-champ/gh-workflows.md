@@ -1,3 +1,10 @@
+---
+name: gh-workflows
+agent: git-champ
+type: patterns
+description: "Handle GitHub workflows beyond PRs -- issues, releases, actions, and repo management via gh CLI"
+---
+
 # Skill: GitHub CLI Workflows (Issues, Releases, Actions)
 
 ## PURPOSE

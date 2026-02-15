@@ -6,3 +6,13 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# OpenMemory - IDE/Assistant specific rules
+.cursor/rules/openmemory.mdc
+
+# Local manifest - user-specific projects and library experts (not shared)
+orchestrator/manifest.local.yaml
+
+# Library expert agents - user-specific (only _template.md is shared)
+agents/library-experts/*
+!agents/library-experts/_template.md

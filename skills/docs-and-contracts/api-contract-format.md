@@ -1,3 +1,10 @@
+---
+name: api-contract-format
+agent: docs-and-contracts
+type: format
+description: "Produce clear, complete, and consistent API contract documentation"
+---
+
 # Skill: API Contract Documentation Format
 
 ## PURPOSE

@@ -1,3 +1,10 @@
+---
+name: code-quality
+agent: implementation
+type: checklist
+description: "Ensure clean, maintainable, production-quality code across all stacks"
+---
+
 # Skill: Code Quality Standards
 
 ## PURPOSE

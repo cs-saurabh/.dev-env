@@ -1,3 +1,10 @@
+---
+name: docker-patterns
+agent: infrastructure
+type: patterns
+description: "Write production-quality Docker and docker-compose configurations"
+---
+
 # Skill: Docker Patterns
 
 ## PURPOSE

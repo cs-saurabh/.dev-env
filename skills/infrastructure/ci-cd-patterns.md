@@ -1,3 +1,10 @@
+---
+name: ci-cd-patterns
+agent: infrastructure
+type: patterns
+description: "Configure reliable, fast, and maintainable CI/CD pipelines"
+---
+
 # Skill: CI/CD Pipeline Patterns
 
 ## PURPOSE

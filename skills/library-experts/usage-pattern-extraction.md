@@ -1,3 +1,10 @@
+---
+name: usage-pattern-extraction
+agent: library-experts
+type: workflow
+description: "Extract practical, implementable usage patterns from library source code"
+---
+
 # Skill: Usage Pattern Extraction
 
 ## PURPOSE

@@ -1,3 +1,10 @@
+---
+name: smart-commits
+agent: git-champ
+type: workflow
+description: "Analyze code changes to draft precise commit messages describing the why, not just the what"
+---
+
 # Skill: Smart Commit Messages
 
 ## PURPOSE

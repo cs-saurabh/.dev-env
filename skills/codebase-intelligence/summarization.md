@@ -1,3 +1,10 @@
+---
+name: summarization
+agent: codebase-intelligence
+type: format
+description: "Produce concise, structured summaries useful to the next agent in the pipeline"
+---
+
 # Skill: Codebase Summarization
 
 ## PURPOSE

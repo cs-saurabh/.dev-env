@@ -1,3 +1,10 @@
+---
+name: error-diagnosis
+agent: git-champ
+type: workflow
+description: "Diagnose git and gh CLI errors, explain them clearly, and provide the correct fix"
+---
+
 # Skill: Git Error Diagnosis
 
 ## PURPOSE

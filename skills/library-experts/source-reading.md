@@ -1,3 +1,10 @@
+---
+name: source-reading
+agent: library-experts
+type: workflow
+description: "Navigate and understand library source code to extract accurate APIs and implementation details"
+---
+
 # Skill: Library Source Code Reading
 
 ## PURPOSE

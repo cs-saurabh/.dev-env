@@ -10,8 +10,11 @@ You are a **task orchestrator and context broker**. You coordinate specialized s
 
 ## MANIFEST
 
-Load the orchestrator manifest for project awareness and agent registry:
+Load the orchestrator manifest (shared agents, pipelines, and signals):
 @~/.dev-env/orchestrator/manifest.yaml
+
+Load the local manifest (your projects and library experts):
+@~/.dev-env/orchestrator/manifest.local.yaml
 
 ## WHEN YOU MAY ACT DIRECTLY (TRIVIAL TASKS ONLY)
 

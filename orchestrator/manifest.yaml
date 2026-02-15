@@ -1,186 +1,30 @@
 # =============================================================================
-# ORCHESTRATOR MANIFEST
+# ORCHESTRATOR MANIFEST (shared)
 # =============================================================================
-# Central registry of projects, agents, and pipeline patterns.
-# The orchestrator loads this to understand what's available and how to route.
+# Central registry of agents, pipeline patterns, and complexity signals.
+# This file is tracked by git and shared across all users.
+#
+# User-specific configuration (projects, library experts) lives in:
+#   ~/.dev-env/orchestrator/manifest.local.yaml  (gitignored)
+#
+# The orchestrator loads BOTH files:
+#   @~/.dev-env/orchestrator/manifest.yaml        (this file -- shared)
+#   @~/.dev-env/orchestrator/manifest.local.yaml  (your local setup)
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# PROJECT PORTFOLIO
+# PROJECT PORTFOLIO & LIBRARY EXPERTS
 # -----------------------------------------------------------------------------
-# High-level awareness of all active projects.
-# The orchestrator uses this to understand cross-repo relationships,
-# route tasks to the correct repo context, and broker between repos.
-# Keep summaries brief -- the orchestrator doesn't need implementation details.
+# These are user-specific and live in manifest.local.yaml (gitignored).
+# Each user has their own projects and library experts with different
+# repo paths, stacks, and source code locations.
+#
+# To add a project or library expert, edit manifest.local.yaml or ask:
+#   "Add ~/Work/projects/my-project to the manifest"
+#   "Create a library expert for shared-utils at ~/Work/projects/shared-utils"
+#
+# See manifest.local.yaml for format examples.
 # -----------------------------------------------------------------------------
-projects:
-  - name: venus-components
-    repo_path: ~/Work/projects/venus-components
-    stack: React, TypeScript
-    summary: "Internal React UI component library (@contentstack/venus-components). Provides reusable UI components like DateRangePicker, Button, Modal, etc."
-    related_to: []
-
-  - name: cs-highcharts
-    repo_path: ~/Work/projects/cs-highcharts
-    stack: React, TypeScript, Highcharts
-    summary: "Internal Highcharts charting library wrapper. Provides chart components for dashboards and analytics."
-    related_to: []
-
-  - name: data-analytics-api
-    repo_path: ~/Work/projects/data-analytics-api
-    stack: NestJS, MongoDB, Elasticsearch, Redis
-    summary: "Backend service for argus and platform-discovery."
-    related_to: [product-analytics]
-
-  - name: product-analytics
-    repo_path: ~/Work/projects/product-analytics
-    stack: React 18, TypeScript, Redux Toolkit, TanStack React Query, Webpack 5, Module Federation, Rollup
-    summary: >
-      Monorepo with two apps: argus (product analytics dashboard app + @contentstack/platform-dashboard
-      library) and platform-discovery (feature discovery micro-frontend). Argus uses Redux Toolkit,
-      TanStack React Query, dnd-kit for drag-and-drop dashboard builder, and dual Webpack/Rollup build.
-      Platform-discovery is a lightweight federated React app. Both use Module Federation and
-      @contentstack/venus-components. No monorepo tooling -- each app has independent deps.
-    related_to: [data-analytics-api, venus-components, cs-highcharts]
-
-  # ---------------------------------------------------------------------------
-  # METERING PLATFORM (monorepo)
-  # ---------------------------------------------------------------------------
-  # Kubernetes-native metering pipeline for event ingestion, Spark-based
-  # aggregation, meter management, and analytics dashboards.
-  #
-  # Data flow:
-  #   Events → Kafka → meter-ingestion-service → meter-ingestion-api-service → OpenSearch
-  #   spark-orchestrator (cron) → SparkApplication (spark-coordinator) → OpenSearch (metrics)
-  #   metering-ui → metering-api-service → OpenSearch (meters, metrics, analytics, audit)
-  #
-  # Dev environment: ./scripts/dev-up.sh deploys everything to Minikube via
-  # the spark-platform Helm chart (Spark Operator, OpenSearch, Kafka, all services).
-  # ---------------------------------------------------------------------------
-
-  - name: metering
-    repo_path: ~/Work/projects/metering
-    stack: Monorepo (NestJS, React, Python, Helm, Kubernetes, Spark)
-    summary: >
-      Monorepo for the Metering Platform. Contains 6 sub-projects: metering-ui (React frontend),
-      metering-api-service (main NestJS API for meters, metrics, auth, analytics, audit),
-      meter-ingestion-api-service (NestJS REST API for event ingestion into OpenSearch),
-      meter-ingestion-service (NestJS Kafka consumer that buffers and bulk-forwards events),
-      spark-orchestrator (NestJS service that schedules and deploys SparkApplications via K8s API),
-      spark-coordinator (Python Spark job processor that aggregates raw events into metrics),
-      and spark-platform (Helm chart that wires Spark Operator, OpenSearch, Kafka, and all services).
-      Dev bootstrap via scripts/dev-up.sh deploys the full stack to Minikube.
-    related_to: [venus-components]
-    sub_projects:
-      - name: metering-ui
-        path: metering-ui/
-        stack: React 18, TypeScript, Vite 4, Zustand, TanStack React Query, styled-components
-        port: 3000
-        summary: >
-          Frontend SPA for the metering platform. Uses @contentstack/venus-components for UI,
-          Zustand for client state, TanStack React Query for server state, Highcharts + Recharts
-          for charts, react-hook-form for forms, CodeMirror for JSON/YAML editing.
-          Proxies /api to metering-api-service (port 3002) and /orchestration to
-          spark-orchestrator (port 3003). Pages: meters CRUD, analytics dashboards,
-          monitoring (Spark jobs, backfill, Elasticsearch), audit logs, user management,
-          roles, API keys, AI assistant, and developer docs.
-        depends_on: [metering-api-service, spark-orchestrator]
-
-      - name: metering-api-service
-        path: metering-api-service/
-        stack: NestJS 11, TypeScript, Node 24, OpenSearch, Passport (JWT + SAML), OpenAI
-        port: 3000 (container) / 3002 (port-forwarded)
-        summary: >
-          Core API for the metering platform. Manages meter definitions (CRUD, versioning,
-          approval workflow), metrics queries (search, aggregation, dimension values),
-          analytics (ingestion tracking, SLA compliance, error rates), auth (JWT + Okta SAML SSO),
-          users/roles/permissions, API key management, dashboards, audit logs, notifications,
-          AI assistant (OpenAI-powered meter/CloudEvent generation), and OpenSearch cluster health.
-          Receives analytics from meter-ingestion-api-service via POST /v1/analytics/record.
-        depends_on: [opensearch]
-
-      - name: meter-ingestion-api-service
-        path: meter-ingestion-api-service/
-        stack: NestJS 11, TypeScript, Node 24, OpenSearch, AWS SQS
-        port: 3005
-        summary: >
-          REST API for high-volume event ingestion. Accepts CloudEvent-formatted meter events
-          via POST /api/v1/events (external) and POST /api/v1/internal/events (from Kafka consumer).
-          Validates against CloudEvent spec, bulk-indexes into OpenSearch, publishes failed
-          events to SQS for retry. Reports analytics to metering-api-service via
-          ANALYTICS_API_URL. Uses @contentstack/message-broker for SQS and
-          @contentstack/logs-sdk for CloudEvent types.
-        depends_on: [opensearch, sqs, metering-api-service]
-
-      - name: meter-ingestion-service
-        path: meter-ingestion-service/
-        stack: NestJS 11, TypeScript, Node 24, Kafka, AWS SQS
-        port: 3002
-        summary: >
-          Kafka consumer that reads CloudEvents from 'meter-events' topic, buffers them
-          with configurable batch size and idle flush timeout, validates against CloudEvent spec,
-          then bulk-forwards to meter-ingestion-api-service via HTTP POST /v1/internal/events.
-          Failed documents go to SQS. Only commits Kafka offsets after successful processing.
-          Uses @contentstack/logs-sdk for Kafka consumer and @contentstack/message-broker for SQS.
-        depends_on: [kafka, meter-ingestion-api-service, sqs]
-
-      - name: spark-orchestrator
-        path: spark-orchestrator/
-        stack: NestJS 11, TypeScript, Node 24, Kubernetes client, OpenSearch, @nestjs/schedule
-        port: 3000 (container) / 3003 (port-forwarded)
-        summary: >
-          NestJS service that orchestrates Spark-based metric aggregation jobs. Runs on a cron
-          schedule (configurable, default every 5 min). Queries active meters from OpenSearch
-          meters_registry, groups by event_type, computes processing windows (watermarks,
-          overlaps, failed intervals), builds SparkApplication manifests using spark-coordinator
-          image, and deploys them via the Kubernetes API to the Spark Operator. Exposes manual
-          trigger, backfill, and job log APIs. Writes job status to OpenSearch spark-job-status index.
-        depends_on: [opensearch, kubernetes-api, spark-coordinator]
-
-      - name: spark-coordinator
-        path: spark-coordinator/
-        stack: Python 3.11, opensearch-py, kubernetes, structlog, click
-        summary: >
-          Python-based Spark job processor. Runs as driver/executor in SparkApplications deployed
-          by spark-orchestrator. In processor mode: reads meter registry and raw events from
-          OpenSearch, aggregates metrics per meter for a given timeframe, writes metrics back to
-          OpenSearch, and reports analytics to metering-api-service. Uses opensearch-py for data
-          access, structlog for logging, click for CLI args, Jinja2 for template rendering.
-        depends_on: [opensearch, metering-api-service]
-
-      - name: spark-platform
-        path: spark-platform/
-        stack: Helm 3, Kubernetes
-        summary: >
-          Helm chart that provisions the entire metering infrastructure. Deploys Spark Operator
-          (kubeflow v2.4.0), OpenSearch (single-node, v3.1.0), Kafka (Bitnami KRaft, v30.1.6),
-          and all application services (spark-orchestrator, metering-api-service,
-          meter-ingestion-api-service, meter-ingestion-service) with ConfigMaps, Secrets,
-          RBAC, and Services. values-dev.yaml configures local dev with imagePullPolicy: Never
-          (uses locally-built images). values-prod.yaml for EKS production.
-        depends_on: []
-
-    infrastructure:
-      opensearch: "Primary data store for meters, raw events, metrics, analytics, audit logs, job status"
-      kafka: "Event bus - topic 'meter-events' for CloudEvent ingestion, 'meter-events-dlq' for dead letters"
-      sqs: "AWS SQS for failed event retry/dead letter processing"
-      kubernetes-api: "Spark Operator watches for SparkApplication CRDs to run spark-coordinator jobs"
-      saml-idp: "Okta SAML SSO for metering-api-service auth"
-      openai-api: "AI assistant for meter definition and CloudEvent generation"
-
-    dev_setup:
-      script: "./scripts/dev-up.sh"
-      teardown: "./scripts/dev-down.sh"
-      prerequisites: [docker, minikube, kubectl, helm, GITHUB_TOKEN]
-      namespace: spark-dev
-      port_forwards:
-        opensearch: "localhost:9200"
-        meter-ingestion-api: "localhost:3005"
-        meter-ingestion-consumer: "localhost:3006"
-        metering-api: "localhost:3002"
-        spark-orchestrator: "localhost:3003"
-
-  # -- ADD YOUR PROJECT REPOS BELOW --
 
 # -----------------------------------------------------------------------------
 # AGENT REGISTRY
@@ -201,6 +45,10 @@ agents:
       - pre-implementation research on unfamiliar code
       - onboard to a new area of the codebase
     skills_dir: ~/.dev-env/skills/codebase-intelligence/
+    skills:
+      - exploration # workflow: structured codebase exploration
+      - summarization # format: concise summaries for pipeline agents
+      - dependency-tracing # workflow: trace data/control flow and dependencies
 
   - name: planning
     type: strategy
@@ -211,6 +59,10 @@ agents:
       - sprint-level task breakdown for epics
       - sequence multi-step changes across files and modules
     skills_dir: ~/.dev-env/skills/planning/
+    skills:
+      - task-breakdown # workflow: decompose tasks into ordered steps
+      - risk-identification # checklist: identify risks and decisions before implementation
+      - file-change-mapping # workflow: map files to create, modify, or delete
 
   - name: implementation
     type: execution
@@ -224,6 +76,12 @@ agents:
       - state management work (Redux, Zustand, etc.)
       - integrate with external services/APIs
     skills_dir: ~/.dev-env/skills/implementation/
+    skills:
+      - react-patterns # patterns: modern React/TypeScript best practices
+      - nestjs-patterns # patterns: NestJS framework conventions
+      - python-patterns # patterns: PEP 8 and modern Python
+      - testing-patterns # patterns: unit, integration, and component testing
+      - code-quality # checklist: clean, maintainable production code
 
   - name: code-review
     type: quality
@@ -235,6 +93,9 @@ agents:
       - review PRs from teammates
       - self-review before pushing
     skills_dir: ~/.dev-env/skills/code-review/
+    skills:
+      - review-checklist # checklist: systematic multi-pass review framework
+      - pr-review-format # format: constructive and actionable review feedback
 
   - name: debugging
     type: diagnosis
@@ -245,6 +106,10 @@ agents:
       - analyze error logs and monitoring alerts
       - identify root cause of failing tests
     skills_dir: ~/.dev-env/skills/debugging/
+    skills:
+      - diagnostic-workflow # workflow: hypothesis-driven diagnosis process
+      - log-analysis # workflow: interpret error logs and stack traces
+      - cross-service-tracing # workflow: trace bugs across service boundaries
 
   - name: infrastructure
     type: devops
@@ -254,6 +119,10 @@ agents:
       - deployment scripts
       - environment configuration and secrets management
     skills_dir: ~/.dev-env/skills/infrastructure/
+    skills:
+      - docker-patterns # patterns: production-quality Docker configs
+      - ci-cd-patterns # patterns: reliable CI/CD pipelines
+      - deployment-patterns # patterns: deployment scripts and release management
 
   - name: docs-and-contracts
     type: documentation
@@ -263,6 +132,9 @@ agents:
       - write technical design documents
       - update README and developer guides
     skills_dir: ~/.dev-env/skills/docs-and-contracts/
+    skills:
+      - api-contract-format # format: clear API contract documentation
+      - type-sync-patterns # patterns: cross-repo TypeScript type sync
 
   - name: git-conflict-resolver
     type: resolution
@@ -273,6 +145,12 @@ agents:
       - semantic merge of conflicting code changes
       - post-merge verification of resolved files
     skills_dir: ~/.dev-env/skills/git-conflict-resolver/
+    skills:
+      - conflict-analysis # workflow: parse and categorize conflict blocks
+      - conflict-pattern-recognition # patterns: common patterns with reliable resolutions
+      - semantic-merge # workflow: intent-aware merge logic
+      - dependency-chain-resolution # workflow: trace cross-file conflict dependencies
+      - post-merge-verification # checklist: verify merged result correctness
 
   - name: git-champ
     type: operations
@@ -289,6 +167,15 @@ agents:
       - manage GitHub issues, releases, and workflow runs
       - diagnose and explain git/gh errors
     skills_dir: ~/.dev-env/skills/git-champ/
+    skills:
+      - smart-commits # workflow: analyze changes and draft commit messages
+      - branch-management # patterns: branch operations and workflows
+      - pull-requests # workflow: create and manage PRs via gh CLI
+      - rebase-and-merge # patterns: advanced history operations
+      - stash-and-undo # patterns: safe stash and undo operations
+      - history-and-inspection # patterns: navigate history, diffs, blame
+      - gh-workflows # patterns: GitHub issues, releases, actions via gh
+      - error-diagnosis # workflow: diagnose and fix git/gh errors
 
   - name: config-master
     type: meta
@@ -301,31 +188,6 @@ agents:
       - run setup-project.sh for new repos
       - any maintenance of the ~/.dev-env/ infrastructure
     skills_dir: null # config-master doesn't need skills -- it IS the skills manager
-
-# -----------------------------------------------------------------------------
-# LIBRARY EXPERTS
-# -----------------------------------------------------------------------------
-# Specialized knowledge agents that are experts on a specific library's
-# source code. They read source, not docs. Replicable from template.
-# Agent definitions live in ~/.dev-env/agents/library-experts/
-# Shared skills live in ~/.dev-env/skills/library-expert/
-# -----------------------------------------------------------------------------
-library_experts:
-  - name: venus-component-expert
-    source_path: ~/Work/projects/venus-components
-    description: "Expert on @contentstack/venus-components React UI library"
-    skills_dir: ~/.dev-env/skills/library-expert/
-
-  - name: cs-highcharts-expert
-    source_path: ~/Work/projects/cs-highcharts
-    description: "Expert on cs-highcharts charting library"
-    skills_dir: ~/.dev-env/skills/library-expert/
-
-  # -- ADD MORE LIBRARY EXPERTS BELOW --
-  # - name: your-lib-expert
-  #   source_path: ~/Work/projects/your-lib
-  #   description: "Expert on your-lib"
-  #   skills_dir: ~/.dev-env/skills/library-expert/
 
 # -----------------------------------------------------------------------------
 # PIPELINE PATTERNS

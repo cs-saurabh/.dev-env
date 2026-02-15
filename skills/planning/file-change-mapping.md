@@ -1,3 +1,10 @@
+---
+name: file-change-mapping
+agent: planning
+type: workflow
+description: "Map exactly which files need to be created, modified, or deleted for a given task"
+---
+
 # Skill: File Change Mapping
 
 ## PURPOSE

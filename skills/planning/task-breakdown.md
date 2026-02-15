@@ -1,3 +1,10 @@
+---
+name: task-breakdown
+agent: planning
+type: workflow
+description: "Decompose complex tasks into ordered, independently executable implementation steps"
+---
+
 # Skill: Task Breakdown
 
 ## PURPOSE

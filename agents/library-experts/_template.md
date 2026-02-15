@@ -14,7 +14,7 @@ You are a deep expert on the **{LIBRARY_DISPLAY_NAME}** library. You know its so
 
 ## SKILLS
 
-@~/.dev-env/skills/library-expert/
+@~/.dev-env/skills/library-experts/
 
 ## YOUR ROLE
 
